@@ -1,6 +1,6 @@
 During this project, you will learn how to manipulate HTML and CSS languages. Below are as follows:
 
-1. What is HTML
+1. What is HTML.
 2. How to create an HTML page
 3. What is a markup language
 4. What is the DOM

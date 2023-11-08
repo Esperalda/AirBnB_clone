@@ -1,6 +1,8 @@
 #!/usr/bin/python3
 '''Test Console Module'''
 
+from models.base_model import BaseModel
+
 from console import HBNBCommand
 from unittest.mock import create_autospec
 from uuid import UUID
@@ -12,7 +14,6 @@ import io
 import json
 from os import remove
 from os.path import isfile
-from models.base_model import BaseModel
 from datetime import datetime
 from io import StringIO
 

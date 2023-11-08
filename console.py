@@ -1,9 +1,11 @@
 #!/usr/bin/python3
 
-"""Defines the HBnB console"""
+#!/usr/bin/python3
 
 import cmd
-import models
+from datetime import datetime
+from shlex import shlex
+
 from models.base_model import BaseModel
 from models.state import State
 from models.city import City
@@ -11,24 +13,37 @@ from models.amenity import Amenity
 from models.place import Place
 from models.review import Review
 from models.user import User
-from datetime import datetime
-from shlex import shlex
-"""entry point for hbnb console"""
+import models
 
 
 class HBNBCommand(cmd.Cmd):
-    """ hbnb shell """
     prompt = '(hbnb) '
-    clslist = {'BaseModel': BaseModel, 'State': State, 'City': City,
-               'Amenity': Amenity, 'Place': Place, 'Review': Review,
-               'User': User}
+    clslist = {
+        'BaseModel': BaseModel,
+        'State': State,
+        'City': City,
+        'Amenity': Amenity,
+        'Place': Place,
+        'Review': Review,
+        'User': User
+    }
 
     def emptyline(self):
-        """empty line"""
+        """
+        Do nothing when an empty line is entered.
+        """
         pass
 
     def do_create(self, clsname=None):
-        """Creates a new instance of BaseModel, saves it and prints the id"""
+        """
+        Create a new instance of a given class.
+
+        Args:
+            clsname (str): The name of the class.
+
+        Returns:
+            None
+        """
         if not clsname:
             print('** class name missing **')
         elif not self.clslist.get(clsname):
@@ -39,7 +54,15 @@ class HBNBCommand(cmd.Cmd):
             print(obj.id)
 
     def do_show(self, arg):
-        """Show instance based on id"""
+        """
+        Display the string representation of an instance.
+
+        Args:
+            arg (str): The class name and instance id.
+
+        Returns:
+            None
+        """
         clsname, objid = None, None
         args = arg.split(' ')
         if len(args) > 0:
@@ -61,7 +84,14 @@ class HBNBCommand(cmd.Cmd):
                 print(obj)
 
     def do_destroy(self, arg):
-        """destroy instance based on id
+        """
+        Delete an instance based on the class name and id.
+
+        Args:
+            arg (str): The class name and instance id.
+
+        Returns:
+            None
         """
         clsname, objid = None, None
         args = arg.split(' ')
@@ -85,7 +115,14 @@ class HBNBCommand(cmd.Cmd):
                 models.storage.save()
 
     def do_all(self, arg):
-        """Prints all instances based or not on the class name
+        """
+        Display all instances of a class or all instances.
+
+        Args:
+            arg (str): The class name (optional).
+
+        Returns:
+            None
         """
         if not arg:
             print([str(v) for k, v in models.storage.all().items()])
@@ -97,7 +134,14 @@ class HBNBCommand(cmd.Cmd):
                    if type(v) is self.clslist.get(arg)])
 
     def do_update(self, arg):
-        """Updates an instance based on the class name and id
+        """
+        Update an instance attribute based on the class name and id.
+
+        Args:
+            arg (str): The class name, instance id, attribute name, and attribute value.
+
+        Returns:
+            None
         """
         clsname, objid, attrname, attrval = None, None, None, None
         updatetime = datetime.now()
@@ -129,23 +173,45 @@ class HBNBCommand(cmd.Cmd):
                 if hasattr(obj, attrname):
                     attrval = type(getattr(obj, attrname))(attrval)
                 else:
-                    attrval = self.getType(attrval)(attrval)
+                    attrval = self.get_type(attrval)(attrval)
                 setattr(obj, attrname, attrval)
                 obj.updated_at = updatetime
                 models.storage.save()
 
     def do_quit(self, arg):
-        """Quit command to exit the program
+        """
+        Quit the command line interface.
+
+        Args:
+            arg (str): The argument passed (unused).
+
+        Returns:
+            True
         """
         return True
 
     def do_EOF(self, arg):
-        """EOF to exit the program
+        """
+        Quit the command line interface when the end-of-file character is reached.
+
+        Args:
+            arg (str): The argument passed (unused).
+
+        Returns:
+            True
         """
         return True
 
     def default(self, line):
-        """handle class commands"""
+        """
+        Handle unknown commands.
+
+        Args:
+            line (str): The command entered.
+
+        Returns:
+            False
+        """
         ln = line.split('.', 1)
         if len(ln) < 2:
             print('*** Unknown syntax:', ln[0])
@@ -187,36 +253,67 @@ class HBNBCommand(cmd.Cmd):
                 self.do_update(" ".join([clsname, objid, ln[0], ln[1]]))
 
     def handle_dict(self, clsname, objid, d):
-        """handle dictionary update"""
+        """
+        Handle updating attributes using a dictionary.
+
+        Args:
+            clsname (str): The class name.
+            objid (str): The instance id.
+            d (dict): The dictionary of attributes and values.
+
+        Returns:
+            None
+        """
         for k, v in d.items():
             self.do_update(" ".join([clsname, objid, str(k), str(v)]))
 
     def postloop(self):
-        """print new line after each loop"""
+        """
+        Print a newline after the command loop ends.
+
+        Returns:
+            None
+        """
         print()
 
     @staticmethod
     def count_class(clsname):
-        """count number of objects of type clsname"""
+        """
+        Count the number of instances of a given class.
+
+        Args:
+            clsname (str): The class name.
+
+        Returns:
+            int: The number of instances.
+        """
         c = 0
         for k, v in models.storage.all().items():
             if type(v).__name__ == clsname:
                 c += 1
-        return (c)
+        return c
 
     @staticmethod
-    def getType(attrval):
-        """return the type of the input string"""
+    def get_type(attrval):
+        """
+        Get the type of an attribute value.
+
+        Args:
+            attrval (str): The attribute value.
+
+        Returns:
+            type: The type of the attribute value.
+        """
         try:
             int(attrval)
-            return (int)
+            return int
         except ValueError:
             pass
         try:
             float(attrval)
-            return (float)
+            return float
         except ValueError:
-            return (str)
+            return str
 
 
 if __name__ == "__main__":

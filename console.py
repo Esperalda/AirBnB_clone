@@ -1,7 +1,5 @@
 #!/usr/bin/python3
 
-#!/usr/bin/python3
-
 import cmd
 from datetime import datetime
 from shlex import shlex
@@ -138,7 +136,8 @@ class HBNBCommand(cmd.Cmd):
         Update an instance attribute based on the class name and id.
 
         Args:
-            arg (str): The class name, instance id, attribute name, and attribute value.
+            arg (str): The class name, instance id, attribute name, and
+            attribute value.
 
         Returns:
             None
@@ -192,7 +191,8 @@ class HBNBCommand(cmd.Cmd):
 
     def do_EOF(self, arg):
         """
-        Quit the command line interface when the end-of-file character is reached.
+        Quit the command line interface when the end-of-file character
+        is reached.
 
         Args:
             arg (str): The argument passed (unused).

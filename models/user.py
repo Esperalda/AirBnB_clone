@@ -1,11 +1,11 @@
 #!/usr/bin/python3
-"""Defines the user class"""
 
+""" Updated Doc Here """
 from models.base_model import BaseModel
 
 
 class User(BaseModel):
-    """Child class of BaseModel"""
+    """ Updated DOC DOC DOC """
     email = ""
     password = ""
     first_name = ""

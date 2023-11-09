@@ -1,12 +1,10 @@
 #!/usr/bin/python3
-"""Defines the place class"""
 
 from models.base_model import BaseModel
 
 
 class Place(BaseModel):
-    """Child class of BaseModel"""
-
+    """This class represents a place."""
     city_id = ""
     user_id = ""
     name = ""

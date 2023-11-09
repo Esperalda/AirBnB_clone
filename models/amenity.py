@@ -1,8 +1,13 @@
 #!/usr/bin/python3
-""" Doc Here """
+
+"""
+Amenity class that inherits from BaseModel
+"""
+
 from models.base_model import BaseModel
 
 
 class Amenity(BaseModel):
-    """ DOC DOC DOC """
+    """ Class that defines attributes for amenity """
+
     name = ""

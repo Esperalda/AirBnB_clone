@@ -1,118 +1,278 @@
 #!/usr/bin/python3
-""" unit test for bases """
-import json
-import unittest
-from models.base_model import BaseModel
+""" Unittest for BaseModel class
+"""
+
 from datetime import datetime
-import models
-from io import StringIO
-import sys
+import io
+from models.base_model import BaseModel
+from os import path, remove
+import unittest
 from unittest.mock import patch
-captured_output = StringIO()
-sys.stdout = captured_output
+from time import sleep
 
 
-class BaseModelTestCase(unittest.TestCase):
-    """ class for base test """
+class Test_init(unittest.TestCase):
+    """ Class for unittest of __init__ """
 
     def setUp(self):
-        """ class for base test """
-        self.filepath = models.storage._FileStorage__file_path
-        with open(self.filepath, 'w') as file:
-            file.truncate(0)
-        models.storage.all().clear()
+        """ Set up for all methods """
+        pass
 
     def tearDown(self):
-        """ class for base test """
-        printed_output = captured_output.getvalue()
-        sys.stdout = sys.__stdout__
+        """ Tear down for all methods """
+        try:
+            remove("file.json")
+        except:
+            pass
 
-    def test_basemodel_init(self):
-        """ class for base test """
-        new = BaseModel()
+    def test_instance_creation_no_arg(self):
+        """ No arguments """
+        b1 = BaseModel()
+        self.assertTrue(hasattr(b1, "id"))
+        self.assertTrue(hasattr(b1, "created_at"))
+        self.assertTrue(hasattr(b1, "updated_at"))
 
-        """ check if it have methods """
-        self.assertTrue(hasattr(new, "__init__"))
-        self.assertTrue(hasattr(new, "__str__"))
-        self.assertTrue(hasattr(new, "save"))
-        self.assertTrue(hasattr(new, "to_dict"))
+    def test_attr_types(self):
+        """ No arguments """
+        b1 = BaseModel()
+        self.assertEqual(type(b1.id), str)
+        self.assertEqual(type(b1.created_at), datetime)
+        self.assertEqual(type(b1.updated_at), datetime)
 
-        """existince"""
-        self.assertTrue(hasattr(new, "id"))
-        self.assertTrue(hasattr(new, "created_at"))
-        self.assertTrue(hasattr(new, "updated_at"))
+    def test_id_diff_for_each_instance(self):
+        """ Checks If every id generated is different """
+        b1 = BaseModel()
+        b2 = BaseModel()
+        b3 = BaseModel()
+        b4 = BaseModel()
+        self.assertFalse(b1.id == b2.id)
+        self.assertFalse(b1.id == b3.id)
+        self.assertFalse(b1.id == b4.id)
+        self.assertFalse(b2.id == b3.id)
+        self.assertFalse(b2.id == b4.id)
+        self.assertFalse(b3.id == b4.id)
 
-        """type test"""
-        self.assertIsInstance(new.id, str)
-        self.assertIsInstance(new.created_at, datetime)
-        self.assertIsInstance(new.updated_at, datetime)
+    " ===========================  ARGS  ================================"
 
-        """ check if save in storage """
-        keyname = "BaseModel."+new.id
-        """ check if object exist by keyname """
-        self.assertIn(keyname, models.storage.all())
-        """ check if the object found in storage with corrrect id"""
-        self.assertTrue(models.storage.all()[keyname] is new)
+    def test_args(self):
+        """ Tests that args works """
+        b1 = BaseModel(1)
+        b2 = BaseModel(1, "hola")
+        b3 = BaseModel(1, "hola", (1, 2))
+        b4 = BaseModel(1, "hola", (1, 2), [1, 2])
 
-        """ Test update """
-        new.name = "My First Model"
-        new.my_number = 89
-        self.assertTrue(hasattr(new, "name"))
-        self.assertTrue(hasattr(new, "my_number"))
-        self.assertTrue(hasattr(models.storage.all()[keyname], "name"))
-        self.assertTrue(hasattr(models.storage.all()[keyname], "my_number"))
+    def test_args_def_(self):
+        """ Tests that default attr are set even with args """
+        b1 = BaseModel(1, "hola", (1, 2), [1, 2])
+        self.assertTrue(hasattr(b1, "id"))
+        self.assertTrue(hasattr(b1, "created_at"))
+        self.assertTrue(hasattr(b1, "updated_at"))
 
-        """check if save() update update_at time change"""
-        old_time = new.updated_at
-        new.save()
-        self.assertNotEqual(old_time, new.updated_at)
-        self.assertGreater(new.updated_at, old_time)
+    " =========================== KWARGS  =============================== "
 
-        """ check if init it call: models.storage.save() """
-        with patch('models.storage.save') as mock_function:
-            obj = BaseModel()
-            obj.save()
-            mock_function.assert_called_once()
+    def test_instance_creation_kwarg(self):
+        """ Arguments in Kwarg """
+        d = {'id': '56d43177-cc5f-4d6c-a0c1-e167f8c27337',
+             'created_at': '2017-09-28T21:03:54.053212',
+             '__class__': 'BaseModel',
+             'updated_at': '2017-09-28T21:03:54.056732'}
+        b1 = BaseModel(**d)
+        self.assertTrue(hasattr(b1, "id"))
+        self.assertTrue(hasattr(b1, "created_at"))
+        self.assertTrue(hasattr(b1, "updated_at"))
+        self.assertTrue(hasattr(b1, "__class__"))
+        self.assertTrue(b1.__class__ not in b1.__dict__)
 
-        """check if it save in json file"""
-        keyname = "BaseModel."+new.id
-        with open(self.filepath, 'r') as file:
-            saved_data = json.load(file)
-        """ check if object exist by keyname """
-        self.assertIn(keyname, saved_data)
-        """ check if the value found in json is correct"""
-        self.assertEqual(saved_data[keyname], new.to_dict())
+        self.assertEqual(b1.id, '56d43177-cc5f-4d6c-a0c1-e167f8c27337')
+        self.assertEqual(b1.created_at.isoformat(),
+                         '2017-09-28T21:03:54.053212')
+        self.assertEqual(b1.updated_at.isoformat(),
+                         '2017-09-28T21:03:54.056732')
 
-    def test_basemodel_init2(self):
-        """ class for base test """
+    def test_no_default_args(self):
+        """ Checks if id and dates are created even if not in kwargs """
+        d = {"name": "Holberton"}
+        b1 = BaseModel(**d)
+        self.assertTrue(hasattr(b1, "id"))
+        self.assertTrue(hasattr(b1, "created_at"))
+        self.assertTrue(hasattr(b1, "updated_at"))
+        self.assertEqual(b1.name, "Holberton")
 
-        new = BaseModel()
-        new.name = "John"
-        new.my_number = 89
-        new2 = BaseModel(**new.to_dict())
-        self.assertEqual(new.id, new2.id)
-        self.assertEqual(new.name, "John")
-        self.assertEqual(new.my_number, 89)
-        self.assertEqual(new.to_dict(), new2.to_dict())
+    def test_dates_str_to_datetime(self):
+        """ Checks that the proper conversion is made for datetimes """
 
-    def test_basemodel_init3(self):
-        """ DOC DOC DOC """
-        new = BaseModel()
-        new2 = BaseModel(new.to_dict())
-        self.assertNotEqual(new, new2)
-        self.assertNotEqual(new.id, new2.id)
-        self.assertTrue(isinstance(new2.created_at, datetime))
-        self.assertTrue(isinstance(new2.updated_at, datetime))
+        d = {'id': '56d43177-cc5f-4d6c-a0c1-e167f8c27337',
+             'created_at': '2017-09-28T21:03:54.053212',
+             '__class__': 'BaseModel',
+             'updated_at': '2017-09-28T21:03:54.056732'}
+        b1 = BaseModel(**d)
+        self.assertEqual(b1.created_at.isoformat(),
+                         '2017-09-28T21:03:54.053212')
+        self.assertEqual(b1.updated_at.isoformat(),
+                         '2017-09-28T21:03:54.056732')
+        self.assertEqual(type(b1.created_at), datetime)
+        self.assertEqual(type(b1.updated_at), datetime)
 
-        new = BaseModel()
+    def test_args_kwargs(self):
+        """ Tests that kwargs works even if there is args """
 
-        self.assertEqual(
-            str(new),  "[BaseModel] ({}) {}".format(new.id, new.__dict__))
+        d = {'id': '56d43177-cc5f-4d6c-a0c1-e167f8c27337',
+             'created_at': '2017-09-28T21:03:54.053212',
+             '__class__': 'BaseModel',
+             'updated_at': '2017-09-28T21:03:54.056732'}
+        b1 = BaseModel(1, "Hello", ["World"], **d)
+        self.assertTrue(hasattr(b1, "id"))
+        self.assertTrue(hasattr(b1, "created_at"))
+        self.assertTrue(hasattr(b1, "updated_at"))
+        self.assertTrue(hasattr(b1, "__class__"))
+        self.assertTrue(b1.__class__ not in b1.__dict__)
 
-        old_time = new.updated_at
-        new.save()
-        self.assertGreater(new.updated_at, old_time)
+        self.assertEqual(b1.id, '56d43177-cc5f-4d6c-a0c1-e167f8c27337')
+        self.assertEqual(b1.created_at.isoformat(),
+                         '2017-09-28T21:03:54.053212')
+        self.assertEqual(b1.updated_at.isoformat(),
+                         '2017-09-28T21:03:54.056732')
 
 
-if __name__ == '__main__':
-    unittest.main()
+class Test_str__(unittest.TestCase):
+
+    """ Class for testing __str__ method """
+
+    def tearDown(self):
+        """ Tear down for all methods """
+        try:
+            remove("file.json")
+        except:
+            pass
+
+    def test_print(self):
+        """ Tests the __str__ method """
+        b1 = BaseModel()
+        s = "[{:s}] ({:s}) {:s}\n"
+        s = s.format(b1.__class__.__name__, b1.id, str(b1.__dict__))
+        with patch('sys.stdout', new=io.StringIO()) as p:
+            print(b1)
+            st = p.getvalue()
+            self.assertEqual(st, s)
+
+    def test_print2(self):
+        """ Tests the __str__ method 2"""
+        b1 = BaseModel()
+        b1.name = "Holberton"
+        b1.code = 123
+        s = "[{:s}] ({:s}) {:s}\n"
+        s = s.format(b1.__class__.__name__, b1.id, str(b1.__dict__))
+        with patch('sys.stdout', new=io.StringIO()) as p:
+            print(b1)
+            st = p.getvalue()
+            self.assertEqual(st, s)
+
+    def test_print_args(self):
+        """ Test __str__ with args """
+        b1 = BaseModel(None, 1, ["A"])
+        b1.name = "Holberton"
+        b1.code = 123
+        s = "[{:s}] ({:s}) {:s}\n"
+        s = s.format(b1.__class__.__name__, b1.id, str(b1.__dict__))
+        with patch('sys.stdout', new=io.StringIO()) as p:
+            print(b1)
+            st = p.getvalue()
+            self.assertEqual(st, s)
+
+    def test_print_kwargs(self):
+
+        """ Test __str__ with prev set kwargs """
+        d = {'id': '56d43177-cc5f-4d6c-a0c1-e167f8c27337',
+             'created_at': '2017-09-28T21:03:54.053212',
+             '__class__': 'BaseModel',
+             'updated_at': '2017-09-28T21:03:54.056732'}
+        b1 = BaseModel(**d)
+        s = "[{:s}] ({:s}) {:s}\n"
+        s = s.format(b1.__class__.__name__, b1.id, str(b1.__dict__))
+        with patch('sys.stdout', new=io.StringIO()) as p:
+            print(b1)
+            st = p.getvalue()
+            self.assertEqual(st, s)
+
+
+class Test_save(unittest.TestCase):
+
+    """ Class to test save method """
+
+    def tearDown(self):
+        """ Tear down for all methods """
+        try:
+            remove("file.json")
+        except:
+            pass
+
+    def test_save(self):
+        """ Tests that update_at time is updated """
+
+        b1 = BaseModel()
+        crtime = b1.created_at
+        uptime = b1.updated_at
+        sleep(0.05)
+        b1.save()
+        self.assertFalse(uptime == b1.updated_at)
+        self.assertTrue(crtime == b1.created_at)
+
+    def test_type(self):
+        """ Checks that after save updated_at type is datetime """
+
+        b1 = BaseModel()
+        b1.save()
+        self.assertEqual(type(b1.updated_at), datetime)
+        self.assertEqual(type(b1.created_at), datetime)
+
+
+class Test_to_dict(unittest.TestCase):
+
+    """ Class to test to_dict method """
+
+    def tearDown(self):
+        """ Tear down for all methods """
+        try:
+            remove("file.json")
+        except:
+            pass
+
+    def test_to_dict(self):
+        """ Checks for correct dictionary conversion """
+        b1 = BaseModel()
+        b1.name = "Holberton"
+        b1.code = 123
+        d = {}
+        d["id"] = b1.id
+        d["created_at"] = b1.created_at.isoformat()
+        d["updated_at"] = b1.updated_at.isoformat()
+        d["name"] = b1.name
+        d["code"] = b1.code
+
+        dic = b1.to_dict()
+
+        self.assertEqual(d["id"], dic["id"])
+        self.assertEqual(d["created_at"], dic["created_at"])
+        self.assertEqual(d["updated_at"], dic["updated_at"])
+        self.assertEqual(d["name"], dic["name"])
+        self.assertEqual(d["code"], dic["code"])
+
+    def test_to_dict_class_dates(self):
+        """ Checks for correct dictionary conversion """
+        b1 = BaseModel()
+        dic = b1.to_dict()
+        self.assertEqual(dic["__class__"], "BaseModel")
+        self.assertEqual(type(dic["created_at"]), str)
+        self.assertEqual(type(dic["updated_at"]), str)
+
+    def test_isoformat(self):
+        """ Checks if date is converted to string in isoformat """
+        b1 = BaseModel()
+        ctime = datetime.now()
+        uptime = datetime.now()
+        b1.created_at = ctime
+        b1.updated_at = uptime
+
+        dic = b1.to_dict()
+        self.assertEqual(dic["created_at"], ctime.isoformat())
+        self.assertEqual(dic["updated_at"], uptime.isoformat())

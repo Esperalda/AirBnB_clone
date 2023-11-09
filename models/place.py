@@ -1,9 +1,15 @@
 #!/usr/bin/python3
+
+"""
+Place class that inherits from BaseModel
+"""
+
 from models.base_model import BaseModel
 
 
 class Place(BaseModel):
-    """ DOC DOC DOC """
+    """ Class that defines attributes for a place """
+
     city_id = ""
     user_id = ""
     name = ""
@@ -15,8 +21,3 @@ class Place(BaseModel):
     latitude = 0.0
     longitude = 0.0
     amenity_ids = []
-
-
-"""    def __init__(self, city_id, user_id):
-        Place.city_id = city_id
-        Place.user_id = user_id"""

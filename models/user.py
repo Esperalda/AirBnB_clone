@@ -1,10 +1,15 @@
 #!/usr/bin/python3
-""" Doc Here """
+
+"""
+User class that inherits from BaseModel
+"""
+
 from models.base_model import BaseModel
 
 
 class User(BaseModel):
-    """ DOC DOC DOC """
+    """ Class that defines attributes for an user """
+
     email = ""
     password = ""
     first_name = ""

@@ -1,55 +1,21 @@
-# Synopsis
+# AirBnB Clone Project
 
-The Airbnb clone project for which we are creating a copy of the [Airbnb](https://www.airbnb.com/).
-Only some features will be implemented and will be listed below once completed.
-
+**Welcome to the AirBnB Clone project!** 🏡🌍 This repository serves as a dynamic platform for property rentals, designed to offer seamless accommodation experiences. Whether you're looking for a cozy cabin or a luxurious villa, our user-friendly interface ensures an unforgettable stay.
 
 ## Features
 
-### Command Interpreter
+- **Explore a Variety of Accommodations:** Discover an array of rental options to suit your preferences.
+- **Real-time Availability:** Check the availability of properties in real-time before making a booking.
+- **Secure Booking:** Rest assured with our secure transaction process for worry-free reservations.
+- **Responsive Design:** Enjoy a smooth experience across different devices and screen sizes.
+- **Discover Dream Destinations:** Find unique stays in both popular and hidden gem locations.
 
-#### Description
+## Usage
 
-The Command Interpreter is used to manage the whole application's functionality from the command line, such as:
-+ Crete a new object.
-+ Retrieve an object from a file, database, etc.
-+ Execute operation on objects. e.g. Count, compute statistics, etc.
-+ Update object's attributes.
-+ Destroy an object.
+To run the project locally, follow these steps:
 
-#### Usage
+1. **Clone the repository:**
 
-To launch the console application in interactive mode simply run:
-
-```console.py ```
-
-or to use the non-interactive mode run:
-
-```echo "your-command-goes-here" | ./console.py ```
-
-#### Commands
-
-Commands | Description | Usage
--------- | ----------- |-------- |
-**help** or **?**| Displays the documented commands. | **help**
-**quit**     | Exits the program. | **quit**
-**EOF**      | Ends the program. Used when files are passed into the program. | N/A
-**create**  | Creates a new instance of the \<class_name\>. Creates a Json file with the object representation. and prints the id of created object. | **create** \<class_name\>
-**show**    | Prints the string representation of an instance based on the class name and id. | **show** \<class_name class_id\>
-**destroy** | Deletes and instance base on the class name and id. | **destroy** \<class_name class_id\>
-**all** | Prints all string representation of all instances based or not on the class name | **all** or **all** \<class_name class_id\>
-**update** | Updates an instance based on the class name and id by adding or updating attribute | **update** \<class_name class_id key value\>
-
-## Tests
-
-If you wish to run at the test for this application all of the test are located
-under the **test/** folder and can execute all of them by simply running:
-
-```python3 -m unittest discover tests ```
-
-from the root directory.
-
-
-## Bugs
-
-+ No known bugs at this time.
+   ```bash
+   git clone https://github.com/nwhator/AirBnB-clone.git
+   && cd AirBnB-clone

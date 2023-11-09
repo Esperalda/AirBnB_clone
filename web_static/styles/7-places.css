@@ -1,4 +1,5 @@
 .places{
+    border: 0;
     display: flex;
     flex-direction: column;
     padding-left: 30px;
@@ -16,7 +17,7 @@
     flex-wrap: wrap;
     justify-content: center;
 }
-article{
+.places article{
     width: 390px;
     margin: 20px;
     padding: 20px;
@@ -27,5 +28,5 @@ article{
 }
 article h2{
     font-size: 30px;
-    margin-top: -5px;
+    margin-top: -2px;
 }

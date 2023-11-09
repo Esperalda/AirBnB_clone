@@ -1,13 +1,13 @@
 #!/usr/bin/python3
-'''
-    Define the class City.
-'''
 from models.base_model import BaseModel
 
 
 class City(BaseModel):
-    '''
-        Define the class City that inherits from BaseModel.
-    '''
+    """ DOC DOC DOC """
     state_id = ""
     name = ""
+
+
+"""    def __init__(self, state_id):
+        City.state_id = state_id
+"""

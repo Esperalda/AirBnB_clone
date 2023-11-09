@@ -1,9 +1,12 @@
 #!/usr/bin/python3
-
-""" File Storage Module """
+'''
+    Implementation of the Amenity class
+'''
 from models.base_model import BaseModel
 
 
 class Amenity(BaseModel):
-    """ Amenity Model """
+    '''
+        Implementation for the Amenities.
+    '''
     name = ""

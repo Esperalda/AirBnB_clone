@@ -1,8 +1,13 @@
 #!/usr/bin/python3
+'''
+    Implementation of the State class
+'''
 
 from models.base_model import BaseModel
 
 
 class State(BaseModel):
-    """ This is the State class. It represents a state object. """
+    '''
+        Implementation for the State.
+    '''
     name = ""

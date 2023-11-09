@@ -1,10 +1,14 @@
 #!/usr/bin/python3
-
+'''
+    Define the class Place.
+'''
 from models.base_model import BaseModel
 
 
 class Place(BaseModel):
-    """This class represents a place."""
+    '''
+        Define the class Place that inherits from BaseModel.
+    '''
     city_id = ""
     user_id = ""
     name = ""
